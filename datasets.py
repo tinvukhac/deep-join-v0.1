@@ -13,6 +13,10 @@ def load_join_data(features_df, result_file):
     result_df = pd.read_csv(result_file, delimiter=',', header=None, names=cols)
     result_df = pd.merge(result_df, features_df, left_on='dataset1', right_on='dataset_name')
     result_df = pd.merge(result_df, features_df, left_on='dataset2', right_on='dataset_name')
+
+    # Load histograms
+    ds1_histograms, ds2_histograms = load_histograms(result_df, 16, 16)
+
     result_df = result_df.drop(columns=['dataset1', 'dataset2', 'dataset_name_x', 'dataset_name_y'])
 
     x = result_df.values  # returns a numpy array
@@ -20,7 +24,27 @@ def load_join_data(features_df, result_file):
     x_scaled = min_max_scaler.fit_transform(x)
     result_df = pd.DataFrame(x_scaled)
 
-    return result_df
+    return result_df, ds1_histograms, ds2_histograms
+
+
+def load_histogram(num_rows, num_columns, dataset):
+    hist = np.genfromtxt('data/histogram_values/{}x{}/{}'.format(num_rows, num_columns, dataset), delimiter=',')
+    hist = hist / hist.max()
+    hist = hist.reshape((hist.shape[0], hist.shape[1], 1))
+    return hist
+
+
+def load_histograms(result_df, num_rows, num_columns):
+    ds1_histograms = []
+    ds2_histograms = []
+
+    for dataset in result_df['dataset1']:
+        ds1_histograms.append(load_histogram(num_rows, num_columns, dataset))
+
+    for dataset in result_df['dataset2']:
+        ds2_histograms.append(load_histogram(num_rows, num_columns, dataset))
+
+    return np.array(ds1_histograms), np.array(ds2_histograms)
 
 
 def main():
