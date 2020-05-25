@@ -42,7 +42,7 @@ def main():
 
     print (np.sum(y_test_array - y_pred_array))
 
-    np.savetxt('baseline_prediction.csv', np.concatenate([y_test_array, y_pred_array], axis=1), fmt='%.3f', delimiter=',')
+    np.savetxt('baseline_prediction_all.csv', np.concatenate([y_test_array, y_pred_array], axis=1), fmt='%.3f', delimiter=',')
 
 
 if __name__ == '__main__':
