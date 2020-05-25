@@ -23,21 +23,25 @@ def load_join_data(features_df, result_file):
     bops_values = np.sum(bops, axis=1)
     bops_values = bops_values.reshape((bops_values.shape[0], 1))
     result_df['bops'] = bops_values
+    # print (bops_values)
     result_size = result_df['result_size']
     result_df = result_df.drop(columns=['result_size', 'dataset1', 'dataset2', 'dataset_name_x', 'dataset_name_y'])
 
-    x = result_df.values  # returns a numpy array
-    min_max_scaler = preprocessing.MinMaxScaler()
-    x_scaled = min_max_scaler.fit_transform(x)
-    result_df = pd.DataFrame(x_scaled)
+    # x = result_df.values  # returns a numpy array
+    # min_max_scaler = preprocessing.MinMaxScaler()
+    # x_scaled = min_max_scaler.fit_transform(x)
+    # result_df = pd.DataFrame(x_scaled)
 
     result_df.insert(19, 'result_size', result_size, True)
+
+    print (result_df)
+    result_df.to_csv('result_df.csv')
 
     return result_df, ds1_histograms, ds2_histograms
 
 
 def load_histogram(num_rows, num_columns, dataset):
-    hist = np.genfromtxt('data/histogram_uniform_values/{}x{}/{}'.format(num_rows, num_columns, dataset), delimiter=',')
+    hist = np.genfromtxt('data/histogram_values/{}x{}/{}'.format(num_rows, num_columns, dataset), delimiter=',')
     normalized_hist = hist / hist.max()
     normalized_hist = normalized_hist.reshape((hist.shape[0], hist.shape[1], 1))
     hist = hist.reshape((hist.shape[0], hist.shape[1], 1))
