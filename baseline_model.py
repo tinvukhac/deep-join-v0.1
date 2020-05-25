@@ -9,8 +9,8 @@ from sklearn.metrics import r2_score
 
 def main():
     print ('Train and test join data using baseline model')
-    features_df = datasets.load_datasets_feature('data/datasets_features.csv')
-    join_data = datasets.load_join_data(features_df, 'data/result_size.csv')
+    features_df = datasets.load_datasets_feature('data/uniform_datasets_features.csv')
+    join_data, ds1_histograms, ds2_histograms = datasets.load_join_data(features_df, 'data/uniform_result_size.csv')
     train_attributes, test_attributes = train_test_split(join_data, test_size=0.25, random_state=42)
 
     X_train = pd.DataFrame.to_numpy(train_attributes[[i for i in range(1, 13)]])

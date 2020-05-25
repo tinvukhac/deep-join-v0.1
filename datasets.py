@@ -28,7 +28,7 @@ def load_join_data(features_df, result_file):
 
 
 def load_histogram(num_rows, num_columns, dataset):
-    hist = np.genfromtxt('data/histogram_values/{}x{}/{}'.format(num_rows, num_columns, dataset), delimiter=',')
+    hist = np.genfromtxt('data/histogram_uniform_values/{}x{}/{}'.format(num_rows, num_columns, dataset), delimiter=',')
     hist = hist / hist.max()
     hist = hist.reshape((hist.shape[0], hist.shape[1], 1))
     return hist
