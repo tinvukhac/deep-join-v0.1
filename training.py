@@ -14,15 +14,15 @@ from sklearn.metrics import r2_score
 
 def main():
     print ('Training the join cardinality estimator')
-    features_df = datasets.load_datasets_feature('data/datasets_features.csv')
-    join_data, ds1_histograms, ds2_histograms = datasets.load_join_data(features_df, 'data/result_size.csv')
+    features_df = datasets.load_datasets_feature('data/uniform_datasets_features.csv')
+    join_data, ds1_histograms, ds2_histograms = datasets.load_join_data(features_df, 'data/uniform_result_size.csv')
     train_attributes, test_attributes, ds1_histograms_train, ds1_histograms_test, ds2_histograms_train, ds2_histograms_test = train_test_split(
         join_data, ds1_histograms, ds2_histograms, test_size=0.25, random_state=42)
 
-    X_train = pd.DataFrame.to_numpy(train_attributes[[i for i in range(1, 13)]])
-    X_test = pd.DataFrame.to_numpy(test_attributes[[i for i in range(1, 13)]])
-    y_train = train_attributes[0]
-    y_test = test_attributes[0]
+    X_train = pd.DataFrame.to_numpy(train_attributes[[i for i in range(18)]])
+    X_test = pd.DataFrame.to_numpy(test_attributes[[i for i in range(18)]])
+    y_train = train_attributes['result_size']
+    y_test = test_attributes['result_size']
 
     mlp = models.create_mlp(X_train.shape[1], regress=False)
     num_rows, num_columns = 16, 16
@@ -36,8 +36,8 @@ def main():
 
     model = Model(inputs=[mlp.input, cnn1.input, cnn2.input], outputs=x)
 
-    EPOCHS = 200
-    LR = 1e-3
+    EPOCHS = 20
+    LR = 1e-2
     # opt = Adam(lr=1e-4, decay=1e-4 / 200)
     opt = Adam(lr=LR, decay=LR / EPOCHS)
     model.compile(loss="mean_absolute_percentage_error", optimizer=opt)
@@ -52,6 +52,8 @@ def main():
     y_pred = model.predict([X_test, ds1_histograms_test, ds2_histograms_test])
     print ('r2 score: {}'.format(r2_score(y_test, y_pred)))
 
+    np.savetxt('prediction.csv', [y_test, y_pred.flatten()], delimiter=',')
+
     diff = y_pred.flatten() - y_test
     percent_diff = (diff / y_test) * 100
     abs_percent_diff = np.abs(percent_diff)
@@ -63,6 +65,17 @@ def main():
 
     print ("Synthetic dataset:")
     print ('mean = {}, std = {}'.format(mean, std))
+
+    y_test_array = np.asarray(y_test)
+    y_pred_array = np.asarray(y_pred)
+
+    y_test_array = y_test_array.reshape((len(y_test_array), 1))
+    y_pred_array = y_test_array.reshape((len(y_pred_array), 1))
+
+    print (np.sum(y_test_array - y_pred_array))
+
+    np.savetxt('proposed_model_prediction.csv', np.concatenate([y_test_array, y_pred_array], axis=1), fmt='%.3f',
+               delimiter=',')
 
 
 if __name__ == '__main__':

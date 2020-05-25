@@ -17,12 +17,15 @@ def load_join_data(features_df, result_file):
     # Load histograms
     ds1_histograms, ds2_histograms = load_histograms(result_df, 16, 16)
 
-    result_df = result_df.drop(columns=['dataset1', 'dataset2', 'dataset_name_x', 'dataset_name_y'])
+    result_size = result_df['result_size']
+    result_df = result_df.drop(columns=['result_size', 'dataset1', 'dataset2', 'dataset_name_x', 'dataset_name_y'])
 
     x = result_df.values  # returns a numpy array
     min_max_scaler = preprocessing.MinMaxScaler()
     x_scaled = min_max_scaler.fit_transform(x)
     result_df = pd.DataFrame(x_scaled)
+
+    result_df.insert(18, 'result_size', result_size, True)
 
     return result_df, ds1_histograms, ds2_histograms
 
