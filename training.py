@@ -15,16 +15,32 @@ import math
 
 def main():
     print ('Training the join cardinality estimator')
-    num_rows, num_columns = 16, 16
-    features_df = datasets.load_datasets_feature('data/datasets_features.csv')
-    join_data, ds1_histograms, ds2_histograms, ds_all_histogram = datasets.load_join_data(features_df,
-                                                                                              'data/result_size.csv',
-                                                                                            'data/histogram_values',
-                                                                                              num_rows, num_columns)
+    num_rows, num_columns = 32, 32
+    # features_df = datasets.load_datasets_feature('data/data_aligned/aligned_small_datasets_features.csv')
+    # join_data, ds1_histograms, ds2_histograms, ds_all_histogram = datasets.load_join_data(features_df,
+    #                                                                                       'data/data_aligned/join_results_small_datasets.csv',
+    #                                                                                       'data/data_aligned/histograms/small_datasets',
+    #                                                                                       num_rows, num_columns)
+
+    features_df_small = datasets.load_datasets_feature('data/data_nonaligned/nonaligned_small_datasets_features.csv')
+    join_data_small, ds1_histograms_small, ds2_histograms_small, ds_all_histogram_small = datasets.load_join_data(features_df_small,
+                                                                                          'data/data_nonaligned/join_results_small_datasets.csv',
+                                                                                          'data/data_nonaligned/histograms/small_datasets',
+                                                                                          num_rows, num_columns)
+
+    features_df_small_vary = datasets.load_datasets_feature('data/data_nonaligned/nonaligned_small_datasets_vary_features.csv')
+    join_data_small_vary, ds1_histograms_small_vary, ds2_histograms_small_vary, ds_all_histogram_small_vary = datasets.load_join_data(features_df_small_vary,
+                                                                                          'data/data_nonaligned/join_results_small_datasets_vary.csv',
+                                                                                          'data/data_nonaligned/histograms/small_datasets_vary',
+                                                                                          num_rows, num_columns)
+
+    join_data = pd.concat([join_data_small, join_data_small_vary])
+    ds1_histograms = np.concatenate((ds1_histograms_small, ds1_histograms_small_vary), axis=0)
+    ds2_histograms = np.concatenate((ds2_histograms_small, ds2_histograms_small_vary), axis=0)
+    ds_all_histogram = np.concatenate((ds_all_histogram_small, ds_all_histogram_small_vary), axis=0)
+
     train_attributes, test_attributes, ds1_histograms_train, ds1_histograms_test, ds2_histograms_train, ds2_histograms_test, ds_all_histogram_train, ds_all_histogram_test = train_test_split(
         join_data, ds1_histograms, ds2_histograms, ds_all_histogram, test_size=0.25, random_state=42)
-
-    print (ds_all_histogram.shape)
 
     num_features = len(join_data.columns) - 7
     print (join_data)
@@ -69,8 +85,6 @@ def main():
     y_pred = model.predict([X_test, ds_all_histogram_test])
     print ('r2 score: {}'.format(r2_score(y_test, y_pred)))
 
-    np.savetxt('prediction.csv', [y_test, y_pred.flatten()], delimiter=',')
-
     diff = y_pred.flatten() - y_test
     percent_diff = (diff / y_test)
     abs_percent_diff = np.abs(percent_diff)
@@ -81,44 +95,6 @@ def main():
     std = np.std(abs_percent_diff)
 
     print ("Small dataset:")
-    print ('mean = {}, std = {}'.format(mean, std))
-
-    y_test_array = np.asarray(y_test)
-    y_pred_array = np.asarray(y_pred)
-
-    y_test_array = y_test_array.reshape((len(y_test_array), 1))
-    y_pred_array = y_pred_array.reshape((len(y_pred_array), 1))
-
-    np.savetxt('proposed_model_prediction.csv', np.concatenate([y_test_array, y_pred_array], axis=1), fmt='%.3f',
-               delimiter=',')
-
-    # Test on data points for large file
-    features_df_large = datasets.load_datasets_feature('data/datasets_features.bak3.csv')
-    join_data_large, ds1_histograms_large, ds2_histograms_large, ds_all_histogram_large = datasets.load_join_data(features_df_large,
-                                                                                          'data/result_size_large.csv',
-                                                                                          'data/histogram_values.bak2',
-                                                                                          num_rows, num_columns)
-    X_test = pd.DataFrame.to_numpy(join_data_large[[i for i in range(num_features)]])
-    y_test = join_data_large['result_size']
-
-    cardinality_x = join_data_large['cardinality_x']
-    cardinality_y = join_data_large['cardinality_y']
-    y_pred_selectivity = model.predict([X_test, ds_all_histogram_large])
-    y_pred = y_pred_selectivity * cardinality_x * cardinality_y / math.pow(10, 9)
-    print ('r2 score: {}'.format(r2_score(y_test, y_pred)))
-
-    # np.savetxt('prediction.csv', [y_test, y_pred.flatten()], delimiter=',')
-
-    diff = y_pred.flatten() - y_test
-    percent_diff = (diff / y_test)
-    abs_percent_diff = np.abs(percent_diff)
-
-    # compute the mean and standard deviation of the absolute percentage
-    # difference
-    mean = np.mean(abs_percent_diff)
-    std = np.std(abs_percent_diff)
-
-    print ("Large dataset:")
     print ('mean = {}, std = {}'.format(mean, std))
 
 

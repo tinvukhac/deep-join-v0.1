@@ -6,18 +6,19 @@ import math
 
 def load_datasets_feature(filename):
     features_df = pd.read_csv(filename, delimiter=',', header=0)
-    print (features_df)
+    # print (features_df)
     return features_df
 
 
 def load_join_data(features_df, result_file, histograms_path, num_rows, num_columns):
-    cols = ['dataset1', 'dataset2', 'result_size']
+    cols = ['dataset1', 'dataset2', 'result_size', 'mbr_tests', 'duration']
     result_df = pd.read_csv(result_file, delimiter=',', header=None, names=cols)
     result_df = pd.merge(result_df, features_df, left_on='dataset1', right_on='dataset_name')
     result_df = pd.merge(result_df, features_df, left_on='dataset2', right_on='dataset_name')
 
     # Load histograms
-    ds1_histograms, ds2_histograms, ds1_original_histograms, ds2_original_histograms, ds_all_histogram = load_histograms(result_df, histograms_path, num_rows, num_columns)
+    ds1_histograms, ds2_histograms, ds1_original_histograms, ds2_original_histograms, ds_all_histogram = load_histograms(
+        result_df, histograms_path, num_rows, num_columns)
 
     # Compute BOPS
     bops = np.multiply(ds1_original_histograms, ds2_original_histograms)
@@ -36,12 +37,12 @@ def load_join_data(features_df, result_file, histograms_path, num_rows, num_colu
     dataset2 = result_df['dataset2']
 
     # result_df = result_df.drop(columns=['result_size', 'dataset1', 'dataset2', 'dataset_name_x', 'dataset_name_y', ' cardinality_x', ' cardinality_y'])
-    result_df = result_df.drop(
-        columns=['result_size', 'dataset1', 'dataset2', 'dataset_name_x', 'dataset_name_y'])
-
     # result_df = result_df.drop(
-    #     columns=['result_size', 'dataset_name_x', 'dataset_name_y', ' cardinality_x',
-    #              ' cardinality_y'])
+    #     columns=['result_size', 'dataset1', 'dataset2', 'dataset_name_x', 'dataset_name_y'])
+
+    result_df = result_df.drop(
+        columns=['result_size', 'dataset1', 'dataset2', 'dataset_name_x', 'dataset_name_y', ' cardinality_x',
+                 ' cardinality_y', 'mbr_tests', 'duration'])
 
     x = result_df.values
     min_max_scaler = preprocessing.MinMaxScaler()
@@ -96,7 +97,8 @@ def load_histograms(result_df, histograms_path, num_rows, num_columns):
         combined_hist = combined_hist / combined_hist.max()
         ds_all_histogram.append(combined_hist)
 
-    return np.array(ds1_histograms), np.array(ds2_histograms), np.array(ds1_original_histograms), np.array(ds2_original_histograms), np.array(ds_all_histogram)
+    return np.array(ds1_histograms), np.array(ds2_histograms), np.array(ds1_original_histograms), np.array(
+        ds2_original_histograms), np.array(ds_all_histogram)
 
 
 def main():
@@ -105,8 +107,12 @@ def main():
     # features_df = load_datasets_feature('data/uniform_datasets_features.csv')
     # load_join_data(features_df, 'data/uniform_result_size.csv', 'data/histogram_uniform_values', 16, 16)
 
-    features_df = load_datasets_feature('data/datasets_features.csv')
-    load_join_data(features_df, 'data/result_size.csv', 'data/histogram_values', 16, 16)
+    features_df = load_datasets_feature('data/data_aligned/aligned_small_datasets_features.csv')
+    join_data, ds1_histograms, ds2_histograms, ds_all_histogram = load_join_data(features_df,
+                                                                                 'data/data_aligned/join_results_small_datasets.csv',
+                                                                                 'data/data_aligned/histograms/small_datasets', 32,
+                                                                                 32)
+    print (join_data)
 
 
 if __name__ == '__main__':
