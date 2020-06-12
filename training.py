@@ -15,7 +15,7 @@ import math
 
 def main():
     print ('Training the join cardinality estimator')
-    num_rows, num_columns = 32, 32
+    num_rows, num_columns = 16, 16
     # features_df = datasets.load_datasets_feature('data/data_aligned/aligned_small_datasets_features.csv')
     # join_data, ds1_histograms, ds2_histograms, ds_all_histogram = datasets.load_join_data(features_df,
     #                                                                                       'data/data_aligned/join_results_small_datasets.csv',
@@ -28,23 +28,27 @@ def main():
                                                                                           'data/data_nonaligned/histograms/small_datasets',
                                                                                           num_rows, num_columns)
 
-    features_df_small_vary = datasets.load_datasets_feature('data/data_nonaligned/nonaligned_small_datasets_vary_features.csv')
-    join_data_small_vary, ds1_histograms_small_vary, ds2_histograms_small_vary, ds_all_histogram_small_vary = datasets.load_join_data(features_df_small_vary,
-                                                                                          'data/data_nonaligned/join_results_small_datasets_vary.csv',
-                                                                                          'data/data_nonaligned/histograms/small_datasets_vary',
-                                                                                          num_rows, num_columns)
-
-    join_data = pd.concat([join_data_small, join_data_small_vary])
-    ds1_histograms = np.concatenate((ds1_histograms_small, ds1_histograms_small_vary), axis=0)
-    ds2_histograms = np.concatenate((ds2_histograms_small, ds2_histograms_small_vary), axis=0)
-    ds_all_histogram = np.concatenate((ds_all_histogram_small, ds_all_histogram_small_vary), axis=0)
-
-    print (join_data)
+    # features_df_small_vary = datasets.load_datasets_feature('data/data_nonaligned/nonaligned_small_datasets_vary_features.csv')
+    # join_data_small_vary, ds1_histograms_small_vary, ds2_histograms_small_vary, ds_all_histogram_small_vary = datasets.load_join_data(features_df_small_vary,
+    #                                                                                       'data/data_nonaligned/join_results_small_datasets_vary_non_zero.csv',
+    #                                                                                       'data/data_nonaligned/histograms/small_datasets_vary',
+    #                                                                                       num_rows, num_columns)
 
     train_attributes, test_attributes, ds1_histograms_train, ds1_histograms_test, ds2_histograms_train, ds2_histograms_test, ds_all_histogram_train, ds_all_histogram_test = train_test_split(
-        join_data, ds1_histograms, ds2_histograms, ds_all_histogram, test_size=0.25, random_state=42)
+        join_data_small, ds1_histograms_small, ds2_histograms_small, ds_all_histogram_small, test_size=0.25,
+        random_state=42)
 
-    num_features = len(join_data.columns) - 7
+    # join_data = pd.concat([join_data_small, join_data_small_vary])
+    # ds1_histograms = np.concatenate((ds1_histograms_small, ds1_histograms_small_vary), axis=0)
+    # ds2_histograms = np.concatenate((ds2_histograms_small, ds2_histograms_small_vary), axis=0)
+    # ds_all_histogram = np.concatenate((ds_all_histogram_small, ds_all_histogram_small_vary), axis=0)
+    #
+    # print (join_data.shape)
+    #
+    # train_attributes, test_attributes, ds1_histograms_train, ds1_histograms_test, ds2_histograms_train, ds2_histograms_test, ds_all_histogram_train, ds_all_histogram_test = train_test_split(
+    #     join_data, ds1_histograms, ds2_histograms, ds_all_histogram, test_size=0.25, random_state=42)
+
+    num_features = len(train_attributes.columns) - 7
     # print (join_data)
     X_train = pd.DataFrame.to_numpy(train_attributes[[i for i in range(num_features)]])
     X_test = pd.DataFrame.to_numpy(test_attributes[[i for i in range(num_features)]])
@@ -63,10 +67,11 @@ def main():
     x = Dense(4, activation="relu")(combined_input)
     x = Dense(1, activation="linear")(x)
 
+    # model = Model(inputs=[mlp.input, cnn1.input, cnn2.input], outputs=x)
     model = Model(inputs=[mlp.input, cnn1.input], outputs=x)
 
     EPOCHS = 50
-    LR = 1e-1
+    LR = 1e-2
     # opt = Adam(lr=1e-4, decay=1e-4 / 200)
     opt = Adam(lr=LR, decay=LR / EPOCHS)
     model.compile(loss="mean_absolute_percentage_error", optimizer=opt)

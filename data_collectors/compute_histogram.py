@@ -38,10 +38,32 @@ def extract_histograms():
             extract_histogram('{}/{}'.format(input_dir, filename), '{}/{}'.format(output_dir, filename), num_rows, num_columns)
 
 
+def shrink_histograms(num_rows, num_columns):
+    input_dir = '../data/data_aligned/histograms/small_datasets/{}x{}'.format(num_rows, num_columns)
+    output_dir = '../data/data_aligned/histograms/small_datasets/{}x{}'.format(num_rows / 2, num_columns / 2)
+
+    f = open('../data/all_datasets.txt')
+    lines = f.readlines()
+    filenames = [line.strip() for line in lines]
+
+    for dataset in filenames:
+        hist_input_filename = '{}/{}'.format(input_dir, dataset)
+        hist_output_filename = '{}/{}'.format(output_dir, dataset)
+
+        hist_input = np.genfromtxt(hist_input_filename, delimiter=',')
+        hist_output = np.zeros((num_rows / 2, num_columns / 2))
+
+        for i in range(hist_output.shape[0]):
+            for j in range(hist_output.shape[1]):
+                hist_output[i, j] = hist_input[2*i, 2*j] + hist_input[2*i + 1, 2*j] + hist_input[2*i, 2*j + 1] + hist_input[2*i + 1, 2*j + 1]
+
+        np.savetxt(hist_output_filename, hist_output.astype(int), fmt='%i', delimiter=',')
+
+
 def main():
     print('Compute histogram')
-    extract_histograms()
-
+    # extract_histograms()
+    shrink_histograms(32, 32)
 
 if __name__ == '__main__':
     main()
