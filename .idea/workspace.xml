@@ -3,9 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="14431db2-c598-4dcd-9d89-a7c1343a740f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/data_nonaligned/join_results_small_datasets_vary.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/data_nonaligned/join_results_small_datasets_vary.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_collectors/compute_histogram.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_collectors/compute_histogram.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data_collectors/filter_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_collectors/filter_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/datasets.py" beforeDir="false" afterPath="$PROJECT_DIR$/datasets.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/training.py" beforeDir="false" afterPath="$PROJECT_DIR$/training.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -49,7 +48,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.training">
+  <component name="RunManager" selected="Python.compute_join_results_same_distribution">
     <configuration name="compute_histogram" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="deep_join" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -72,7 +71,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="datasets" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="compute_join_results_same_distribution" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="deep_join" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -80,12 +79,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/data_collectors" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/datasets.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/data_collectors/compute_join_results_same_distribution.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -162,11 +161,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.compute_join_results_same_distribution" />
         <item itemvalue="Python.training" />
-        <item itemvalue="Python.compute_histogram" />
         <item itemvalue="Python.filter_data" />
+        <item itemvalue="Python.compute_histogram" />
         <item itemvalue="Python.filter_result_size" />
-        <item itemvalue="Python.datasets" />
       </list>
     </recent_temporary>
   </component>
@@ -201,7 +200,7 @@
       <workItem from="1591742381931" duration="1933000" />
       <workItem from="1591801654288" duration="5096000" />
       <workItem from="1591830470293" duration="421000" />
-      <workItem from="1591933472332" duration="7587000" />
+      <workItem from="1591933472332" duration="19545000" />
     </task>
     <servers />
   </component>
@@ -213,22 +212,22 @@
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="776" y="310" width="424" height="484" key="FileChooserDialogImpl/67.27.1853.1053@67.27.1853.1053" timestamp="1591507975858" />
-    <state width="1807" height="278" key="GridCell.Tab.0.bottom" timestamp="1591941151201">
+    <state width="1807" height="278" key="GridCell.Tab.0.bottom" timestamp="1591991882126">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1807" height="278" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1591941151201" />
-    <state width="1807" height="278" key="GridCell.Tab.0.center" timestamp="1591941151200">
+    <state width="1807" height="278" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1591991882126" />
+    <state width="1807" height="278" key="GridCell.Tab.0.center" timestamp="1591991882124">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1807" height="278" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1591941151200" />
-    <state width="1807" height="278" key="GridCell.Tab.0.left" timestamp="1591941151200">
+    <state width="1807" height="278" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1591991882124" />
+    <state width="1807" height="278" key="GridCell.Tab.0.left" timestamp="1591991882119">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1807" height="278" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1591941151200" />
-    <state width="1807" height="278" key="GridCell.Tab.0.right" timestamp="1591941151201">
+    <state width="1807" height="278" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1591991882119" />
+    <state width="1807" height="278" key="GridCell.Tab.0.right" timestamp="1591991882125">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1807" height="278" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1591941151201" />
+    <state width="1807" height="278" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1591991882125" />
     <state x="482" y="187" key="SettingsEditor" timestamp="1591226422430">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
@@ -244,11 +243,12 @@
     <SUITE FILE_PATH="coverage/deep_join$datasets.coverage" NAME="datasets Coverage Results" MODIFIED="1591936258752" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/deep_join$compute_histogram__1_.coverage" NAME="compute_histogram (1) Coverage Results" MODIFIED="1591206028956" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data_collectors" />
     <SUITE FILE_PATH="coverage/deep_join$execute_batch_join.coverage" NAME="execute_batch_join Coverage Results" MODIFIED="1591743476521" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data_collectors" />
-    <SUITE FILE_PATH="coverage/deep_join$training.coverage" NAME="training Coverage Results" MODIFIED="1591941151182" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/deep_join$training.coverage" NAME="training Coverage Results" MODIFIED="1591980720772" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/deep_join$compute_histogram.coverage" NAME="compute_histogram Coverage Results" MODIFIED="1591940536797" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data_collectors" />
+    <SUITE FILE_PATH="coverage/deep_join$compute_join_results_same_distribution.coverage" NAME="compute_join_results_same_distribution Coverage Results" MODIFIED="1591991882105" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data_collectors" />
     <SUITE FILE_PATH="coverage/deep_join$parse_histogram_mbrs.coverage" NAME="parse_histogram_mbrs Coverage Results" MODIFIED="1591226851405" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data_collectors" />
     <SUITE FILE_PATH="coverage/deep_join$filter_result_size.coverage" NAME="filter_result_size Coverage Results" MODIFIED="1591939516884" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data_collectors" />
     <SUITE FILE_PATH="coverage/deep_join$compute_selectivities.coverage" NAME="compute_selectivities Coverage Results" MODIFIED="1591628807277" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data_collectors" />
-    <SUITE FILE_PATH="coverage/deep_join$filter_data.coverage" NAME="filter_data Coverage Results" MODIFIED="1591939648930" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data_collectors" />
+    <SUITE FILE_PATH="coverage/deep_join$filter_data.coverage" NAME="filter_data Coverage Results" MODIFIED="1591980660933" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data_collectors" />
   </component>
 </project>

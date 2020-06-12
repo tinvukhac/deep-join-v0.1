@@ -17,7 +17,7 @@ def load_join_data(features_df, result_file, histograms_path, num_rows, num_colu
     result_df = pd.merge(result_df, features_df, left_on='dataset2', right_on='dataset_name')
 
     # Load histograms
-    ds1_histograms, ds2_histograms, ds1_original_histograms, ds2_original_histograms, ds_all_histogram = load_histograms(
+    ds1_histograms, ds2_histograms, ds1_original_histograms, ds2_original_histograms, ds_all_histogram, ds_bops_histogram = load_histograms(
         result_df, histograms_path, num_rows, num_columns)
 
     # Compute BOPS
@@ -60,7 +60,7 @@ def load_join_data(features_df, result_file, histograms_path, num_rows, num_colu
     # print (len(result_df))
     # result_df.to_csv('result_df.csv')
 
-    return result_df, ds1_histograms, ds2_histograms, ds_all_histogram
+    return result_df, ds1_histograms, ds2_histograms, ds_all_histogram, ds_bops_histogram
 
 
 def load_histogram(histograms_path, num_rows, num_columns, dataset):
@@ -77,6 +77,7 @@ def load_histograms(result_df, histograms_path, num_rows, num_columns):
     ds1_original_histograms = []
     ds2_original_histograms = []
     ds_all_histogram = []
+    ds_bops_histogram = []
 
     for dataset in result_df['dataset1']:
         normalized_hist, hist = load_histogram(histograms_path, num_rows, num_columns, dataset)
@@ -89,16 +90,22 @@ def load_histograms(result_df, histograms_path, num_rows, num_columns):
         ds2_original_histograms.append(hist)
 
     for i in range(len(ds1_histograms)):
-        # hist1 = ds1_histograms[i]
-        # hist2 = ds2_histograms[i]
         hist1 = ds1_original_histograms[i]
         hist2 = ds2_original_histograms[i]
         combined_hist = np.dstack((hist1, hist2))
         combined_hist = combined_hist / combined_hist.max()
         ds_all_histogram.append(combined_hist)
 
+    for i in range(len(ds1_histograms)):
+        hist1 = ds1_original_histograms[i]
+        hist2 = ds2_original_histograms[i]
+        bops_hist = np.multiply(hist1, hist2)
+        if bops_hist.max() > 0:
+            bops_hist = bops_hist / bops_hist.max()
+        ds_bops_histogram.append(bops_hist)
+
     return np.array(ds1_histograms), np.array(ds2_histograms), np.array(ds1_original_histograms), np.array(
-        ds2_original_histograms), np.array(ds_all_histogram)
+        ds2_original_histograms), np.array(ds_all_histogram), np.array(ds_bops_histogram)
 
 
 def main():
