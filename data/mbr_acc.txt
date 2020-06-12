@@ -1,0 +1,6 @@
+[1795 rows x 25 columns]
+Train on 1346 samples, validate on 449 samples
+
+r2 score: 0.801351944875
+Synthetic dataset:
+mean = 0.165574608931, std = 0.146888803451

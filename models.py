@@ -14,8 +14,8 @@ from keras.models import Model
 def create_mlp(dim, regress=False):
     # define our MLP network
     model = Sequential()
-    model.add(Dense(8, input_dim=dim, activation="relu"))
-    model.add(Dense(4, activation="relu"))
+    model.add(Dense(4, input_dim=dim, activation="relu"))
+    model.add(Dense(2, activation="relu"))
 
     # check to see if the regression node should be added
     if regress:
@@ -50,7 +50,7 @@ def create_cnn(width, height, depth, filters=(4, 8, 16), regress=False):
 
     # flatten the volume, then FC => RELU => BN => DROPOUT
     x = Flatten()(x)
-    x = Dense(16)(x)
+    x = Dense(8)(x)
     x = Activation("relu")(x)
     x = BatchNormalization(axis=chan_dim)(x)
     x = Dropout(0.5)(x)

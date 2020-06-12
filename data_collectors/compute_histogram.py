@@ -22,7 +22,8 @@ def extract_histogram(input_filename, output_filename, num_rows, num_columns):
 
 
 def extract_histograms():
-    histogram_dirs = ['16x16', '32x32']
+    histogram_dirs = ['32x32']
+    # f = open('../data/large_datasets.csv')
     f = open('../data/all_datasets.txt')
     lines = f.readlines()
     filenames = [line.strip() for line in lines]
@@ -31,8 +32,8 @@ def extract_histograms():
         data = histogram_dir.split('x')
         num_rows = int(data[0])
         num_columns = int(data[1])
-        input_dir = '../data/histograms/{}'.format(histogram_dir)
-        output_dir = '../data/histogram_values/{}'.format(histogram_dir)
+        input_dir = '../data/data_nonaligned/histograms/histograms_union_mbr/small_datasets/{}'.format(histogram_dir)
+        output_dir = '../data/data_nonaligned/histograms/small_datasets/{}'.format(histogram_dir)
         for filename in filenames:
             extract_histogram('{}/{}'.format(input_dir, filename), '{}/{}'.format(output_dir, filename), num_rows, num_columns)
 
