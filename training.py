@@ -39,11 +39,13 @@ def main():
     ds2_histograms = np.concatenate((ds2_histograms_small, ds2_histograms_small_vary), axis=0)
     ds_all_histogram = np.concatenate((ds_all_histogram_small, ds_all_histogram_small_vary), axis=0)
 
+    print (join_data)
+
     train_attributes, test_attributes, ds1_histograms_train, ds1_histograms_test, ds2_histograms_train, ds2_histograms_test, ds_all_histogram_train, ds_all_histogram_test = train_test_split(
         join_data, ds1_histograms, ds2_histograms, ds_all_histogram, test_size=0.25, random_state=42)
 
     num_features = len(join_data.columns) - 7
-    print (join_data)
+    # print (join_data)
     X_train = pd.DataFrame.to_numpy(train_attributes[[i for i in range(num_features)]])
     X_test = pd.DataFrame.to_numpy(test_attributes[[i for i in range(num_features)]])
     y_train = train_attributes['join_selectivity']
@@ -64,7 +66,7 @@ def main():
     model = Model(inputs=[mlp.input, cnn1.input], outputs=x)
 
     EPOCHS = 50
-    LR = 1e-2
+    LR = 1e-1
     # opt = Adam(lr=1e-4, decay=1e-4 / 200)
     opt = Adam(lr=LR, decay=LR / EPOCHS)
     model.compile(loss="mean_absolute_percentage_error", optimizer=opt)
