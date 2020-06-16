@@ -14,50 +14,37 @@ from sklearn.metrics import r2_score
 import math
 
 
+def test_trained_model(model, X_test, y_test):
+    print ('Test trained model')
+
+
 def main():
     print ('Training the join cardinality estimator')
+    is_train = True
     num_rows, num_columns = 16, 16
-    features_df = datasets.load_datasets_feature('data/data_aligned/aligned_small_datasets_features.csv')
+    target = 'join_selectivity'
+    # target = 'mbr_tests'
+    datasets_features_path = 'data/spatial_descriptors/spatial_descriptors_small_datasets.csv'
+    datasets_histograms_path = 'data/histograms/small_datasets'
+    join_results_path = 'data/join_results/join_results_small_datasets_no_bit.csv'
+    features_df = datasets.load_datasets_feature(datasets_features_path)
     join_data, ds1_histograms, ds2_histograms, ds_all_histogram, ds_bops_histogram = datasets.load_join_data(features_df,
-                                                                                          'data/data_aligned/join_results_small_datasets.csv',
-                                                                                          'data/data_aligned/histograms/small_datasets',
+                                                                                          join_results_path,
+                                                                                          datasets_histograms_path,
                                                                                           num_rows, num_columns)
 
-    # features_df_small = datasets.load_datasets_feature('data/data_nonaligned/nonaligned_small_datasets_features.csv')
-    # join_data_small, ds1_histograms_small, ds2_histograms_small, ds_all_histogram_small = datasets.load_join_data(features_df_small,
-    #                                                                                       'data/data_nonaligned/join_results_small_datasets.csv',
-    #                                                                                       'data/data_nonaligned/histograms/small_datasets',
-    #                                                                                       num_rows, num_columns)
-
-    # features_df_small_vary = datasets.load_datasets_feature('data/data_nonaligned/nonaligned_small_datasets_vary_features.csv')
-    # join_data_small_vary, ds1_histograms_small_vary, ds2_histograms_small_vary, ds_all_histogram_small_vary, ds_bops_histogram_small_vary = datasets.load_join_data(features_df_small_vary,
-    #                                                                                       'data/data_nonaligned/join_results_small_datasets_vary.csv',
-    #                                                                                       'data/data_nonaligned/histograms/small_datasets_vary',
-    #                                                                                       num_rows, num_columns)
-    #
-    # train_attributes, test_attributes, ds1_histograms_train, ds1_histograms_test, ds2_histograms_train, ds2_histograms_test, ds_all_histogram_train, ds_all_histogram_test, ds_bops_histogram_small_vary_train, ds_bops_histogram_small_vary_test = train_test_split(
-    #     join_data_small_vary, ds1_histograms_small_vary, ds2_histograms_small_vary, ds_all_histogram_small_vary, ds_bops_histogram_small_vary, test_size=0.25,
-    #     random_state=42)
-    #
-    # for d in ds_bops_histogram_small_vary:
-    #     print (np.sum(d))
-
-    # join_data = pd.concat([join_data_small, join_data_small_vary])
-    # ds1_histograms = np.concatenate((ds1_histograms_small, ds1_histograms_small_vary), axis=0)
-    # ds2_histograms = np.concatenate((ds2_histograms_small, ds2_histograms_small_vary), axis=0)
-    # ds_all_histogram = np.concatenate((ds_all_histogram_small, ds_all_histogram_small_vary), axis=0)
-    #
-    # print (join_data.shape)
-    #
     train_attributes, test_attributes, ds1_histograms_train, ds1_histograms_test, ds2_histograms_train, ds2_histograms_test, ds_all_histogram_train, ds_all_histogram_test = train_test_split(
-        join_data, ds1_histograms, ds2_histograms, ds_all_histogram, test_size=0.25, random_state=42)
+        join_data, ds1_histograms, ds2_histograms, ds_all_histogram, test_size=0.20, random_state=42)
 
-    num_features = len(train_attributes.columns) - 7
+    # train_attributes, val_attributes, ds1_histograms_train, ds1_histograms_val, ds2_histograms_train, ds2_histograms_val, ds_all_histogram_train, ds_all_histogram_val = train_test_split(
+    #     train_attributes, ds1_histograms_train, ds2_histograms_train, ds_all_histogram_train, test_size=0.20, random_state=32)
+
+    num_features = len(train_attributes.columns) - 8
     # print (join_data)
     X_train = pd.DataFrame.to_numpy(train_attributes[[i for i in range(num_features)]])
     X_test = pd.DataFrame.to_numpy(test_attributes[[i for i in range(num_features)]])
-    y_train = train_attributes['join_selectivity']
-    y_test = test_attributes['join_selectivity']
+    y_train = train_attributes[target]
+    y_test = test_attributes[target]
     # y_train = train_attributes['result_size']
     # y_test = test_attributes['result_size']
 
@@ -75,15 +62,13 @@ def main():
     # model = Model(inputs=[mlp.input, cnn1.input, cnn2.input, cnn3.input], outputs=x)
     model = Model(inputs=[mlp.input, cnn1.input], outputs=x)
 
-    EPOCHS = 50
-    LR = 1e-2
+    EPOCHS = 40
+    LR = 5*1e-2
     # opt = Adam(lr=1e-4, decay=1e-4 / 200)
     opt = Adam(lr=LR, decay=LR / EPOCHS)
     model.compile(loss="mean_absolute_percentage_error", optimizer=opt)
 
-    print (model.summary())
-
-    is_train = False
+    # print (model.summary())
 
     # train the model
     if is_train:
@@ -95,17 +80,16 @@ def main():
         model.fit(
             [X_train, ds_all_histogram_train], y_train,
             validation_data=([X_test, ds_all_histogram_test], y_test),
-            epochs=EPOCHS, batch_size=32)
+            epochs=EPOCHS, batch_size=128)
 
-        model.save('model.h5')
-        model.save_weights('model_weights.h5')
+        model.save('trained_models/model.h5')
+        model.save_weights('trained_models/model_weights.h5')
     else:
-        model = keras.models.load_model('model.h5')
-        model.load_weights('model_weights.h5')
+        model = keras.models.load_model('trained_models/model.h5')
+        model.load_weights('trained_models/model_weights.h5')
 
     print ('Test on small datasets')
     y_pred = model.predict([X_test, ds_all_histogram_test])
-
 
     print ('r2 score: {}'.format(r2_score(y_test, y_pred)))
 
@@ -113,9 +97,9 @@ def main():
     percent_diff = (diff / y_test)
     abs_percent_diff = np.abs(percent_diff)
 
-    test_attributes['join_selectivity_pred'] = y_pred
-    test_attributes['percent_diff'] = percent_diff
-    test_attributes.to_csv('prediction_small.csv')
+    # test_attributes['join_selectivity_pred'] = y_pred
+    # test_attributes['percent_diff'] = abs_percent_diff
+    # test_attributes.to_csv('prediction_small.csv')
 
     # compute the mean and standard deviation of the absolute percentage
     # difference
@@ -124,30 +108,79 @@ def main():
 
     print ('mean = {}, std = {}'.format(mean, std))
 
-    print ('Test on large dataset')
-    features_df = datasets.load_datasets_feature('data/data_aligned/aligned_large_datasets_features.csv')
+    print ('Test on large datasets')
+    datasets_features_path = 'data/spatial_descriptors/spatial_descriptors_large_datasets.csv'
+    datasets_histograms_path = 'data/histograms/large_datasets'
+    join_results_path = 'data/join_results/join_results_large_datasets_no_bit.csv'
+    features_df = datasets.load_datasets_feature(datasets_features_path)
     join_data, ds1_histograms, ds2_histograms, ds_all_histogram, ds_bops_histogram = datasets.load_join_data(
         features_df,
-        'data/data_aligned/join_results_large_datasets_noparcel.csv',
-        'data/data_aligned/histograms/large_datasets',
+        join_results_path,
+        datasets_histograms_path,
         num_rows, num_columns)
 
     X_test = pd.DataFrame.to_numpy(join_data[[i for i in range(num_features)]])
-    y_test = join_data['join_selectivity']
+    y_test = join_data[target]
 
     y_pred = model.predict([X_test, ds_all_histogram])
-    join_data['join_selectivity_pred'] = y_pred
-    join_data['percent_diff'] = percent_diff
-    join_data.to_csv('prediction_large.csv')
 
     print ('r2 score: {}'.format(r2_score(y_test, y_pred)))
 
     diff = y_pred.flatten() - y_test
     percent_diff = (diff / y_test)
     abs_percent_diff = np.abs(percent_diff)
+    mean = np.mean(abs_percent_diff)
+    std = np.std(abs_percent_diff)
 
-    # compute the mean and standard deviation of the absolute percentage
-    # difference
+    print ('mean = {}, std = {}'.format(mean, std))
+
+    print ('Test on large datasets - different distributions')
+    datasets_features_path = 'data/spatial_descriptors/spatial_descriptors_large_datasets_different_distributions.csv'
+    datasets_histograms_path = 'data/histograms/large_datasets_different_distributions'
+    join_results_path = 'data/join_results/join_results_large_datasets_different_distributions_no_bit.csv'
+    features_df = datasets.load_datasets_feature(datasets_features_path)
+    join_data, ds1_histograms, ds2_histograms, ds_all_histogram, ds_bops_histogram = datasets.load_join_data(
+        features_df,
+        join_results_path,
+        datasets_histograms_path,
+        num_rows, num_columns)
+
+    X_test = pd.DataFrame.to_numpy(join_data[[i for i in range(num_features)]])
+    y_test = join_data[target]
+
+    y_pred = model.predict([X_test, ds_all_histogram])
+
+    print ('r2 score: {}'.format(r2_score(y_test, y_pred)))
+
+    diff = y_pred.flatten() - y_test
+    percent_diff = (diff / y_test)
+    abs_percent_diff = np.abs(percent_diff)
+    mean = np.mean(abs_percent_diff)
+    std = np.std(abs_percent_diff)
+
+    print ('mean = {}, std = {}'.format(mean, std))
+
+    print ('Test on non-aligned small datasets - different distributions')
+    datasets_features_path = 'data/spatial_descriptors/spatial_descriptors_small_datasets_non_aligned.csv'
+    datasets_histograms_path = 'data/histograms/small_datasets_non_aligned_pairs'
+    join_results_path = 'data/join_results/join_results_small_datasets_non_aligned.csv'
+    features_df = datasets.load_datasets_feature(datasets_features_path)
+    join_data, ds1_histograms, ds2_histograms, ds_all_histogram, ds_bops_histogram = datasets.load_join_data2(
+        features_df,
+        join_results_path,
+        datasets_histograms_path,
+        num_rows, num_columns)
+
+    X_test = pd.DataFrame.to_numpy(join_data[[i for i in range(num_features)]])
+    y_test = join_data[target]
+
+    y_pred = model.predict([X_test, ds_all_histogram])
+
+    print ('r2 score: {}'.format(r2_score(y_test, y_pred)))
+
+    diff = y_pred.flatten() - y_test
+    percent_diff = (diff / y_test)
+    abs_percent_diff = np.abs(percent_diff)
     mean = np.mean(abs_percent_diff)
     std = np.std(abs_percent_diff)
 

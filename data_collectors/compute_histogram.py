@@ -1,7 +1,11 @@
 import numpy as np
+import os
 
 
 def extract_histogram(input_filename, output_filename, num_rows, num_columns):
+
+    os.system('rm {}'.format(output_filename))
+
     hist = np.zeros((num_rows, num_columns))
     input_f = open(input_filename)
 
@@ -22,9 +26,9 @@ def extract_histogram(input_filename, output_filename, num_rows, num_columns):
 
 
 def extract_histograms():
-    histogram_dirs = ['32x32']
+    histogram_dirs = ['16x16', '32x32', '64x64']
     # f = open('../data/large_datasets.csv')
-    f = open('../data/all_datasets.txt')
+    f = open('../data/dataset_filenames/small_datasets_non_aligned_filenames.csv')
     lines = f.readlines()
     filenames = [line.strip() for line in lines]
 
@@ -32,17 +36,44 @@ def extract_histograms():
         data = histogram_dir.split('x')
         num_rows = int(data[0])
         num_columns = int(data[1])
-        input_dir = '../data/data_nonaligned/histograms/histograms_union_mbr/small_datasets/{}'.format(histogram_dir)
-        output_dir = '../data/data_nonaligned/histograms/small_datasets/{}'.format(histogram_dir)
+        input_dir = '../data/histograms_raw/small_datasets_non_aligned/{}'.format(histogram_dir)
+        output_dir = '../data/histograms/small_datasets_non_aligned/{}'.format(histogram_dir)
         for filename in filenames:
             extract_histogram('{}/{}'.format(input_dir, filename), '{}/{}'.format(output_dir, filename), num_rows, num_columns)
 
 
-def shrink_histograms(num_rows, num_columns):
-    input_dir = '../data/data_aligned/histograms/small_datasets/{}x{}'.format(num_rows, num_columns)
-    output_dir = '../data/data_aligned/histograms/small_datasets/{}x{}'.format(num_rows / 2, num_columns / 2)
+def extract_histograms_pairs():
+    histogram_dirs = ['16x16', '32x32', '64x64']
 
-    f = open('../data/all_datasets.txt')
+    f = open('../data/dataset_filenames/small_datasets_non_aligned_filenames.csv')
+    lines = f.readlines()
+    filenames = [line.strip() for line in lines]
+
+    for histogram_dir in histogram_dirs:
+        data = histogram_dir.split('x')
+        num_rows = int(data[0])
+        num_columns = int(data[1])
+
+        count = 0
+        for i in range(len(filenames)):
+            for j in range(i + 1, len(filenames)):
+                if i != j:
+                    count += 1
+                    input_dir = '../data/histograms_raw/small_datasets_non_aligned_pairs/{}/{}'.format(histogram_dir, count)
+                    output_dir = '../data/histograms/small_datasets_non_aligned_pairs/{}/{}'.format(histogram_dir, count)
+                    dataset1 = filenames[i]
+                    dataset2 = filenames[j]
+                    extract_histogram('{}/{}'.format(input_dir, dataset1), '{}/{}'.format(output_dir, dataset1),
+                                      num_rows, num_columns)
+                    extract_histogram('{}/{}'.format(input_dir, dataset2), '{}/{}'.format(output_dir, dataset2),
+                                      num_rows, num_columns)
+
+
+def shrink_histograms(num_rows, num_columns):
+    input_dir = '../data/histograms/large_datasets_different_distributions/{}x{}'.format(num_rows, num_columns)
+    output_dir = '../data/histograms/large_datasets_different_distributions/{}x{}'.format(num_rows / 2, num_columns / 2)
+
+    f = open('../data/dataset_filenames/large_datasets_filenames.csv')
     lines = f.readlines()
     filenames = [line.strip() for line in lines]
 
@@ -63,7 +94,9 @@ def shrink_histograms(num_rows, num_columns):
 def main():
     print('Compute histogram')
     # extract_histograms()
-    shrink_histograms(32, 32)
+    extract_histograms_pairs()
+    # shrink_histograms(32, 32)
+
 
 if __name__ == '__main__':
     main()
