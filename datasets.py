@@ -32,8 +32,14 @@ def load_join_data(features_df, result_file, histograms_path, num_rows, num_colu
     cardinality_y = result_df[' cardinality_y']
     result_size = result_df['result_size']
     mbr_tests = result_df['mbr_tests']
+
     join_selectivity = result_size / (cardinality_x * cardinality_y)
     join_selectivity = join_selectivity * math.pow(10, 9)
+
+    mbr_tests_selectivity = mbr_tests / (cardinality_x * cardinality_y)
+    mbr_tests_selectivity = mbr_tests_selectivity * math.pow(10, 9)
+
+    duration = result_df['duration']
 
     dataset1 = result_df['dataset1']
     dataset2 = result_df['dataset2']
@@ -58,7 +64,9 @@ def load_join_data(features_df, result_file, histograms_path, num_rows, num_colu
     result_df['dataset2'] = dataset2
     result_df.insert(len(result_df.columns), 'result_size', result_size, True)
     result_df.insert(len(result_df.columns), 'join_selectivity', join_selectivity, True)
-    result_df.insert(len(result_df.columns), 'mbr_tests', join_selectivity, True)
+    result_df.insert(len(result_df.columns), 'mbr_tests', mbr_tests, True)
+    result_df.insert(len(result_df.columns), 'mbr_tests_selectivity', mbr_tests_selectivity, True)
+    result_df.insert(len(result_df.columns), 'duration', duration, True)
 
     # print (len(result_df))
     # result_df.to_csv('result_df.csv')
